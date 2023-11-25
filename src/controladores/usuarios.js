@@ -1,4 +1,5 @@
 const pool = require('../conexao')
+const bcrypt = require('bcrypt')
 
 const cadastrarUsuario = async (req, res) => {
     const { nome_loja, email, senha } = req.body
@@ -16,14 +17,12 @@ const cadastrarUsuario = async (req, res) => {
     }
 
     try {
-
+        const senhaCriptografada = await bcrypt.hash(senha, 10)
         const novoUsuario = await pool.query(
             `insert into usuarios (nome_loja, email, senha) values ($1, $2, $3) returning *`,
-            [nome_loja, email, senha]
+            [nome_loja, email, senhaCriptografada]
         )
 
-        // const query = `insert into usuarios (nome_loja, email, senha) values ($1, $2, $3) returning *`
-        // const { rows } = await pool.query(query, [nome_loja, email, senha])
 
         return res.status(201).json(novoUsuario.rows[0])
     } catch (error) {
