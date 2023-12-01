@@ -1,11 +1,13 @@
 const express = require('express');
 const { cadastrarUsuario } = require('./controladores/usuarios');
 const { login } = require('./controladores/login');
-const intermediarioCadastrarUsuario = require('./intermediarios/IntermediarioCadastrarUsuario');
+const validarCorpoRequisicao = require('./intermediarios/validarCorpoRequisicao');
+const schemaUsuario = require('./validacoes/schemaUsuario');
+
 
 const rotas = express();
 
-rotas.post('/usuario', intermediarioCadastrarUsuario, cadastrarUsuario);
+rotas.post('/usuario', validarCorpoRequisicao(schemaUsuario), cadastrarUsuario);
 rotas.post('/login', login)
 
 module.exports = rotas
